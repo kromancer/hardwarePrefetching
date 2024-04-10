@@ -1,15 +1,22 @@
 #ifndef __ATOM_MSR_H
 #define __ATOM_MSR_H
 
-#include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
 
 #define L2MAXDIST_MAX (31)
 #define L3MAXDIST_MAX (63)
 #define L2XQ_MAX (31)
 #define L3XQ_MAX (31)
 #define LOW_DMDDENS_L2L3XQ_MAX (63)
+
+struct msr1A4_s{
+    uint64_t L2_STREAM_DISABLE : 1;
+    uint64_t pad0 : 1;
+    uint64_t L1_NLP_DISABLE : 1;
+    uint64_t L1_IPP_DISABLE : 1;
+    uint64_t L1_NPP_DISABLE : 1;
+    uint64_t L2_AMP_DISABLE : 1;
+};
 
 struct msr1320_s{
 	uint64_t L2_STREAM_AMP_XQ_THRESHOLD : 5;
@@ -70,15 +77,14 @@ struct msr1324_s{
 	uint64_t L1_HOMELESS_THRESHOLD : 8;
 };
 
-
 union msr_u{
 	struct msr1320_s msr1320;
 	struct msr1321_s msr1321;
 	struct msr1322_s msr1322;
 	struct msr1323_s msr1323;
 	struct msr1324_s msr1324;
+    struct msr1A4_s  msr1A4;
 	uint64_t v;
 };
 
 #endif
-
