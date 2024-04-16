@@ -23,6 +23,9 @@ int msr_enable_l1ipp(union msr_u msr[]);
 int msr_disable_l1npp(union msr_u msr[]);
 int msr_enable_l1npp(union msr_u msr[]);
 
+int msr_disable_l2stream(union msr_u msr[]);
+int msr_enable_l2stream(union msr_u msr[]);
+
 int msr_set_l2xq(union msr_u msr[], int value);
 int msr_get_l2xq(union msr_u msr[]);
 int msr_set_l3xq(union msr_u msr[], int value);
