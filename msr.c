@@ -49,7 +49,8 @@ int msr_open(int core, union msr_u msr[]) {
 //
 // Read MSR values
 //
-int msr_hwpf_read(int msr_file, union msr_u msr[]) {
+int msr_hwpf_read(int msr_file, union msr_u msr[])
+{
     int field_num = 0;
     for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_1; i++, field_num++){
 		if(pread(msr_file, &msr[field_num], 8, HWPF_MSR_BASE_1 + i) != 8){
@@ -59,7 +60,7 @@ int msr_hwpf_read(int msr_file, union msr_u msr[]) {
 	}
 
 	for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_2; i++, field_num++){
-		if(pread(msr_file, &msr[i], 8, HWPF_MSR_BASE_2 + i) != 8){
+		if(pread(msr_file, &msr[field_num], 8, HWPF_MSR_BASE_2 + i) != 8){
             loge(TAG, "Could not read MSR 0x%X\n", HWPF_MSR_BASE_2 + i);
             return -1;
 		}
@@ -73,15 +74,16 @@ int msr_hwpf_read(int msr_file, union msr_u msr[]) {
 //
 int msr_hwpf_write(int msr_file, union msr_u msr[])
 {
-    for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_1; i++){
-		if(pwrite(msr_file, &msr[i], 8, HWPF_MSR_BASE_1 + i) != 8){
+    int field_num = 0;
+    for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_1; i++, field_num++){
+		if(pwrite(msr_file, &msr[field_num], 8, HWPF_MSR_BASE_1 + i) != 8){
 			loge(TAG, "Could not write MSR %d\n", HWPF_MSR_BASE_1 + i);
 			return -1;
 		}
 	}
 
-	for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_2; i++){
-		if(pwrite(msr_file, &msr[i], 8, HWPF_MSR_BASE_2 + i) != 8){
+	for(int i = 0; i < HWPF_MSR_FIELDS_IN_BASE_2; i++, field_num++){
+		if(pwrite(msr_file, &msr[field_num], 8, HWPF_MSR_BASE_2 + i) != 8){
 			loge(TAG, "Could not write MSR %d\n", HWPF_MSR_BASE_2 + i);
 			return -1;
 		}
