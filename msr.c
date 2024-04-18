@@ -252,3 +252,43 @@ int msr_enable_l2stream(union msr_u msr[])
 
     return val_before;
 }
+
+int msr_disable_l2amp(union msr_u msr[])
+{
+    int val_before = msr[5].msr1A4.L2_AMP_DISABLE;
+    msr[5].msr1A4.L2_AMP_DISABLE = DISABLE;
+
+    atomic_thread_fence(memory_order_seq_cst);
+
+    return val_before;
+}
+
+int msr_enable_l2amp(union msr_u msr[])
+{
+    int val_before = msr[5].msr1A4.L2_AMP_DISABLE;
+    msr[5].msr1A4.L2_AMP_DISABLE = ENABLE;
+
+    atomic_thread_fence(memory_order_seq_cst);
+
+    return val_before;
+}
+
+int msr_disable_llcstream(union msr_u msr[])
+{
+    int val_before = msr[0].msr1320.LLC_STREAM_DISABLE;
+    msr[0].msr1320.LLC_STREAM_DISABLE = DISABLE;
+
+    atomic_thread_fence(memory_order_seq_cst);
+
+    return val_before;
+}
+
+int msr_enable_llcstream(union msr_u msr[])
+{
+    int val_before = msr[0].msr1320.LLC_STREAM_DISABLE;
+    msr[0].msr1320.LLC_STREAM_DISABLE = ENABLE;
+
+    atomic_thread_fence(memory_order_seq_cst);
+
+    return val_before;
+}
