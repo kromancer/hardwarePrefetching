@@ -28,7 +28,7 @@ struct thread_state {
 	pthread_t thread_id; // from pthread_create()
 	int core_id;
 	int hwpf_msr_dirty; //0 not updated, 1 updated
-	union msr_u hwpf_msr_value[HWPF_MSR_FIELDS]; //0... -> 0x1320...
+	msr_t hwpf_msr_value; //0... -> 0x1320...
 	uint64_t pmu_result[PMU_COUNTERS]; //delta since last read
 };
 
@@ -56,7 +56,7 @@ void sigintHandler(int sig_num)
 	//rework this to wake up the other threads and clean them up in a nice way
 	printf("sig %d, terminating dPF... hold on\n", sig_num);
 	quitflag = 1;
-	//sleep(time_intervall * 2); 
+	//sleep(time_intervall * 2);
 	exit(1);
 }
 
@@ -147,7 +147,7 @@ int calculate_settings()
 	if(tunealg == 0){
 
 		for(int i = 0; i <ACTIVE_THREADS; i++){
-			int l2xq = msr_get_l2xq(&gtinfo[i].hwpf_msr_value[0]);
+			int l2xq = msr_get_l2xq(gtinfo[i].hwpf_msr_value);
 			int old_l2xq = l2xq;
 
 			if(ddr_rd_percent < 0.10); //idle system
@@ -167,13 +167,13 @@ int calculate_settings()
 			if(l2xq > L2XQ_MAX)l2xq = L2XQ_MAX;
 
 			if(old_l2xq != l2xq){
-				msr_set_l2xq(&gtinfo[i].hwpf_msr_value[0], l2xq);
+				msr_set_l2xq(gtinfo[i].hwpf_msr_value, l2xq);
 				gtinfo[i].hwpf_msr_dirty = 1;
 				if(i == 0)logv(TAG, "l2xq %d\n", l2xq);
 			}
 
 
-			int l3xq = msr_get_l3xq(&gtinfo[i].hwpf_msr_value[0]);
+			int l3xq = msr_get_l3xq(gtinfo[i].hwpf_msr_value);
 			int old_l3xq = l3xq;
 
 			if(ddr_rd_percent < 0.10); //idle system
@@ -193,7 +193,7 @@ int calculate_settings()
 			if(l3xq > L3XQ_MAX)l3xq = L3XQ_MAX;
 
 			if(old_l3xq != l3xq){
-				msr_set_l3xq(&gtinfo[i].hwpf_msr_value[0], l3xq);
+				msr_set_l3xq(gtinfo[i].hwpf_msr_value, l3xq);
 				gtinfo[i].hwpf_msr_dirty = 1;
 				if(i == 0)logv(TAG, "l3xq %d\n", l3xq);
 			}
@@ -206,7 +206,7 @@ int calculate_settings()
 			l2_hitr[5], l2_hitr[6], l2_hitr[7], l2_hitr[8], l2_hitr[9], l2_hitr[10], l2_hitr[11], l2_hitr[12], l2_hitr[13], l2_hitr[14], l2_hitr[15]);
 
 		for(int i = 0; i <ACTIVE_THREADS; i++){
-			int l2maxdist = msr_get_l2maxdist(&gtinfo[i].hwpf_msr_value[0]);
+			int l2maxdist = msr_get_l2maxdist(gtinfo[i].hwpf_msr_value);
 			int old_l2maxdist = l2maxdist;
 
 			if(ddr_rd_percent < 0.10); //idle system
@@ -226,12 +226,12 @@ int calculate_settings()
 			if(l2maxdist > L2MAXDIST_MAX)l2maxdist = L2MAXDIST_MAX;
 
 			if(old_l2maxdist != l2maxdist){
-				msr_set_l2maxdist(&gtinfo[i].hwpf_msr_value[0], l2maxdist);
+				msr_set_l2maxdist(gtinfo[i].hwpf_msr_value, l2maxdist);
 				gtinfo[i].hwpf_msr_dirty = 1;
 				if(i == 0)logv(TAG, "l2maxdist %d\n", l2maxdist);
 			}
 
-			int l3maxdist = msr_get_l3maxdist(&gtinfo[i].hwpf_msr_value[0]);
+			int l3maxdist = msr_get_l3maxdist(gtinfo[i].hwpf_msr_value);
 			int old_l3maxdist = l3maxdist;
 
 			if(ddr_rd_percent < 0.10); //idle system
@@ -251,7 +251,7 @@ int calculate_settings()
 			if(l3maxdist > L3MAXDIST_MAX)l3maxdist = L3MAXDIST_MAX;
 
 			if(old_l3maxdist != l3maxdist){
-				msr_set_l3maxdist(&gtinfo[i].hwpf_msr_value[0], l3maxdist);
+				msr_set_l3maxdist(gtinfo[i].hwpf_msr_value, l3maxdist);
 				gtinfo[i].hwpf_msr_dirty = 1;
 				if(i == 0)logv(TAG, "l3maxdist %d\n", l3maxdist);
 			}
@@ -283,8 +283,8 @@ static void *thread_start(void *arg)
 		loge(TAG, "Could not set thread affinity for coreid %d, pthread_setaffinity_np()\n", tstate->core_id);
 	}
 
-	msr_file = msr_int(tstate->core_id, tstate->hwpf_msr_value);
-	msr_hwpf_write(msr_file, tstate->hwpf_msr_value);
+	msr_file = msr_init(tstate->core_id, tstate->hwpf_msr_value);
+	msr_write_all(msr_file, tstate->hwpf_msr_value);
 
 	pmu_core_config(msr_file);
 
@@ -316,7 +316,7 @@ static void *thread_start(void *arg)
 		if(CORE_IN_MODULE == 0 && tstate->hwpf_msr_dirty == 1){
 			tstate->hwpf_msr_dirty = 0;
 
-			msr_hwpf_write(msr_file, tstate->hwpf_msr_value);
+			msr_write_all(msr_file, tstate->hwpf_msr_value);
 		}
 	}
 
@@ -446,4 +446,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
