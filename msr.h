@@ -28,11 +28,16 @@ int msr_open(int core);
 int msr_read_all(int msr_file, msr_t msr);
 int msr_write_all(int msr_file, msr_t msr);
 
+int msr_disable_l1nlp(msr_t msr);
+int msr_enable_l1nlp(msr_t msr);
+
 int msr_disable_l1ipp(msr_t msr);
 int msr_enable_l1ipp(msr_t msr);
 
 int msr_disable_l1npp(msr_t msr);
 int msr_enable_l1npp(msr_t msr);
+
+void assert_l2_npl_is_disabled(msr_t msr);
 
 int msr_disable_l2stream(msr_t msr);
 int msr_enable_l2stream(msr_t msr);

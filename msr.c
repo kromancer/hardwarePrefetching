@@ -198,6 +198,20 @@ int msr_get_l3maxdist(union msr_u msr[])
 	return msr[INDEX_1320].msr1320.LLC_STREAM_MAX_DISTANCE;
 }
 
+int msr_disable_l1nlp(msr_t msr)
+{
+    int val_before = msr[INDEX_1A4].msr1A4.L1_NLP_DISABLE;
+    msr[INDEX_1A4].msr1A4.L1_NLP_DISABLE = DISABLE;
+    return val_before;
+}
+
+int msr_enable_l1nlp(msr_t msr)
+{
+    int val_before = msr[INDEX_1A4].msr1A4.L1_NLP_DISABLE;
+    msr[INDEX_1A4].msr1A4.L1_NLP_DISABLE = ENABLE;
+    return val_before;
+}
+
 int msr_disable_l1ipp(msr_t msr)
 {
     int val_before = msr[INDEX_1A4].msr1A4.L1_IPP_DISABLE;
@@ -224,6 +238,11 @@ int msr_enable_l1npp(msr_t msr)
     int val_before = msr[INDEX_1A4].msr1A4.L1_NPP_DISABLE;
     msr[INDEX_1A4].msr1A4.L1_NPP_DISABLE = ENABLE;
     return val_before;
+}
+
+void assert_l2_npl_is_disabled(msr_t msr)
+{
+    assert(msr[INDEX_1321].msr1321.L2_DISABLE_NEXT_LINE_PREFETCH == DISABLE);
 }
 
 int msr_disable_l2stream(msr_t msr)
