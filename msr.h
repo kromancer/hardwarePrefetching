@@ -10,10 +10,10 @@
 union msr_u
 {
     struct msr1320_reg msr1320;
-	struct msr1321_reg msr1321;
-	struct msr1322_reg msr1322;
-	struct msr1323_reg msr1323;
-	struct msr1324_reg msr1324;
+    struct msr1321_reg msr1321;
+    struct msr1322_reg msr1322;
+    struct msr1323_reg msr1323;
+    struct msr1324_reg msr1324;
     struct msr1A4_reg  msr1A4;
 };
 
@@ -59,5 +59,11 @@ int  msr_get_l2maxdist(msr_t msr);
 
 void msr_set_l3maxdist(msr_t msr, int value);
 int  msr_get_l3maxdist(msr_t msr);
+
+int msr_set_l2dd(union msr_u msr[], int value);
+int msr_get_l2dd(union msr_u msr[]);
+
+int msr_set_l2ddovr(union msr_u msr[], int value);
+int msr_get_l2ddovr(union msr_u msr[]);
 
 #endif

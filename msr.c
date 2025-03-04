@@ -286,3 +286,23 @@ int msr_enable_llcstream(msr_t msr)
     msr[0].msr1320.LLC_STREAM_DISABLE = ENABLE;
     return val_before;
 }
+
+int msr_get_l2dd(union msr_u msr[]) {
+    return msr[1].msr1321.L2_STREAM_DEMAND_DENSITY;
+}
+
+int msr_set_l2dd(union msr_u msr[], int value) {
+    int val_before = msr_get_l2dd(msr);
+    msr[1].msr1321.L2_STREAM_DEMAND_DENSITY = value;
+    return val_before;
+}
+
+int msr_get_l2ddovr(union msr_u msr[]) {
+    return msr[1].msr1321.L2_STREAM_DEMAND_DENSITY_OVR;
+}
+
+int msr_set_l2ddovr(union msr_u msr[], int value) {
+    int val_before = msr_get_l2ddovr(msr);
+    msr[1].msr1321.L2_STREAM_DEMAND_DENSITY_OVR = value;
+    return val_before;
+}
