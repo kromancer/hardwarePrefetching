@@ -48,8 +48,8 @@ int msr_enable_l2amp(msr_t msr);
 int msr_disable_llcstream(msr_t msr);
 int msr_enable_llcstream(msr_t msr);
 
-void msr_set_l2xq(msr_t msr, int value);
-int  msr_get_l2xq(msr_t msr);
+int msr_set_l2xq(msr_t msr, int value);
+int msr_get_l2xq(msr_t msr);
 
 void msr_set_l3xq(msr_t msr, int value);
 int  msr_get_l3xq(msr_t msr);

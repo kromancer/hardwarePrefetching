@@ -158,44 +158,46 @@ int msr_corepmu_read(int msr_file, int nr_events, uint64_t *result)
 	return 0;
 }
 
-void msr_set_l2xq(msr_t msr, int value)
+int msr_set_l2xq(msr_t msr, int value)
 {
-	msr[INDEX_1320].msr1320.L2_STREAM_AMP_XQ_THRESHOLD = value;
+    int val_before = msr_get_l2xq(msr);
+    msr[INDEX_1320].msr1320.L2_STREAM_AMP_XQ_THRESHOLD = value;
+    return val_before;
 }
 
 int msr_get_l2xq(msr_t msr)
 {
-	return msr[INDEX_1320].msr1320.L2_STREAM_AMP_XQ_THRESHOLD;
+    return msr[INDEX_1320].msr1320.L2_STREAM_AMP_XQ_THRESHOLD;
 }
 
 void msr_set_l3xq(msr_t msr, int value)
 {
-	msr[INDEX_1320].msr1320.LLC_STREAM_XQ_THRESHOLD = value;
+    msr[INDEX_1320].msr1320.LLC_STREAM_XQ_THRESHOLD = value;
 }
 
 int msr_get_l3xq(msr_t msr)
 {
-	return msr[INDEX_1320].msr1320.LLC_STREAM_XQ_THRESHOLD;
+    return msr[INDEX_1320].msr1320.LLC_STREAM_XQ_THRESHOLD;
 }
 
 void msr_set_l2maxdist(msr_t msr, int value)
 {
-	msr[INDEX_1320].msr1320.L2_STREAM_MAX_DISTANCE = value;
+    msr[INDEX_1320].msr1320.L2_STREAM_MAX_DISTANCE = value;
 }
 
 int msr_get_l2maxdist(union msr_u msr[])
 {
-	return msr[INDEX_1320].msr1320.L2_STREAM_MAX_DISTANCE;
+    return msr[INDEX_1320].msr1320.L2_STREAM_MAX_DISTANCE;
 }
 
 void msr_set_l3maxdist(union msr_u msr[], int value)
 {
-	msr[INDEX_1320].msr1320.LLC_STREAM_MAX_DISTANCE = value;
+    msr[INDEX_1320].msr1320.LLC_STREAM_MAX_DISTANCE = value;
 }
 
 int msr_get_l3maxdist(union msr_u msr[])
 {
-	return msr[INDEX_1320].msr1320.LLC_STREAM_MAX_DISTANCE;
+    return msr[INDEX_1320].msr1320.LLC_STREAM_MAX_DISTANCE;
 }
 
 int msr_disable_l1nlp(msr_t msr)
